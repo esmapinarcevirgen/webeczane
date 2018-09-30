@@ -1,0 +1,219 @@
+<div class="container-fluid">
+    <div class="row bg-title">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+            <h4 class="page-title">Fatura Yönetimi</h4>
+        </div>
+        <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+            <a onclick="newItem()" class="btn btn-danger pull-right m-l-20 waves-effect waves-light">
+                Recete Ekle
+            </a>
+            <ol class="breadcrumb">
+                <li><a href="#">Web Eczane</a></li>
+                <li class="active">Recete Yönetimi</li>
+            </ol>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="alertDiv"></div>
+            <div class="white-box">
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>TurId</th>
+                                <th>HastaneId</th>
+                               
+                                <th>DoktorId</th>
+                                <th>MüsteriId</th>
+                                <th>Tutar</th>
+                                <th>Tarih</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Recete</h4>
+            </div>
+            <div class="modal-body">
+                <div id="alertDivModal"></div>
+                <form id="form">
+                    <input hidden name="Id">
+                    <div class="form-group">
+                        <label for="tutar">Tutar:</label>
+                        <input type="text" name="Tutar" id="tutar" placeholder="Tutar" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Tarih</label>
+                        <input type="text" class="form-control" id="tarih" name="Tarih">
+                    </div>
+                   
+                   
+                    <div class="form-group">
+                        <label for="pwd">ReceteTuru</label>
+                        <select type="text" class="form-control" id="Turid" name="TurId"></select>
+                    </div>
+                    <div class="form-group">
+                            <label for="pwd">Doktor</label>
+                            <select type="text" class="form-control" id="Doktorid" name="DoktorId"></select>
+                        </div>
+                        <div class="form-group">
+                                <label for="pwd">Hastane</label>
+                                <select type="text" class="form-control" id="Hastaneid" name="HastaneId"></select>
+                            </div>
+                            <div class="form-group">
+                                    <label for="pwd">Musteri</label>
+                                    <select type="text" class="form-control" id="Musteriid" name="MusteriId"></select>
+                                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="save()">Kaydet</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+<script>
+    $(() => {
+        listele()
+        receteturuSelect()
+        doktorSelect()
+        hastaneSelect()
+        musteriSelect()
+    })
+
+    receteturuSelect = () => $.getJSON('/receteturu/listesi', (receteturları) =>
+     receteturları.liste.map(receteturu => $('#Turid').append('<option value="' + receteturu.id + '">' + receteturu.adi + '</option>')))
+     doktorSelect = () => $.getJSON('/doktor/listesi', (doktorlar) =>
+     doktorlar.liste.map(doktor => $('#Doktorid').append('<option value="' + doktor.id + '">' + doktor.adi + '</option>')))
+     hastaneSelect = () => $.getJSON('/hastane/listesi', (hastaneler) =>
+     hastaneler.liste.map(hastane => $('#Hastaneid').append('<option value="' + hastane.id + '">' + hastane.adi + '</option>')))
+     musteriSelect = () => $.getJSON('/musteri/listesi', (musteriler) =>
+     musteriler.liste.map(musteri => $('#Musteriid').append('<option value="' + musteri.tckimlikno + '">' + musteri.adi+ '</option>')))
+    
+     
+
+
+
+    save = () => {
+        $.post('/recete/kaydet', { item: $('#form').serializeObject() }, (sonuc) => {
+            if (sonuc.basarili) {
+                listele()
+                $('#myModal').modal('hide')
+                
+            }
+            else {
+                basarizMesaji('alertDivModal')
+            }
+        })
+    }
+    var liste;
+    listele = () => {
+        $('#tbody').empty()
+        $.getJSON('/recete/listesi', (data) => {
+            if (data.basarili) {
+                liste = data.liste
+                data.liste.map(item => $('#tbody').append(`
+        <tr>
+            <td>${item.id}</td>
+            <td>${item.turid}</td>
+            <td>${item.hastaneid}</td>
+            <td>${item.doktorid}</td>
+            <td>${item.musteriid}</td>
+                
+            <td>${item.tutar}</td>
+            <td>${item.tarih}</td>
+            <td>
+                <button type="buttton" class="btn btn-default" onclick="editItem(${item.id})"><i class="fa fa-edit"></i></button>
+                <button type="buttton" class="btn btn-default" onclick="deleteItem(${item.id})"><i class="fa fa-trash"></i></button>
+                </td>
+        </tr>
+            `))
+            } else {
+                basarizMesaji('alertDiv')
+            }
+        })
+    }
+    newItem = () => {
+
+        $('#alertDivModal').empty()
+        $('[name=Id]').val(null)
+        $('[name=Turid]').val(null)
+        $('[name=Hastaneid]').val(null)
+        $('[name=Doktorid]').val(null)
+        
+        $('[name=Musteriid]').val(null)
+        $('[name=Tutar]').val(null)
+        $('[name=Tarih]').val(null)
+        $('#myModal').modal('show')
+    }
+
+    editItem = (id) => {
+        var item = liste.find(x => x.id === id)
+
+        $('[name=Id]').val(item.id)
+        $('[name=Turid]').val(item.turid)
+        $('[name=Hastaneid]').val(item.hastaneid)
+        $('[name=Doktorid]').val(item.doktorid)
+        $('[name=Musteriid]').val(item.musteriid)
+      
+        $('[name=Tutar]').val(item.tutar)
+        $('[name=Tarih]').val(item.tarih)
+        $('#myModal').modal('show')
+    }
+
+    deleteItem = (id) => swal({
+        title: 'Sil?',
+        text: "Kayıdı Silmek İstediğinize Emin Misiniz!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Sil!'
+    }).then((result) => {
+        if (result.value) {
+            $.post('/recete/sil', { Id: id }, (sonuc) => {
+                if (sonuc.basarili) {
+                    swal(
+                        'Silindi!',
+                        'Kayıt Silindi.',
+                        'success'
+                    )
+                    listele()
+                }
+
+                else
+                    swal(
+                        'Hata!',
+                        'Sanırım Bir Şeyler Ters Gitti.',
+                        'error'
+                    )
+            })
+        }
+    })
+
+    basarizMesaji = (divName) => $('#' + divName).append('<div class="alert alert-danger">Başarısız! Sanırım Bir Şeyler Ters Gitti :(</div>')
+
+
+</script>
+}

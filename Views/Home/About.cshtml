@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "About";
+}
+
+<table class="table table-border table-hover">
+<thead>
+    <tr>
+        <th>Id</th>
+        <th>Adı</th>
+        <th>Adres</th>
+    </tr>
+</thead>
+<tbody id="hastaneListesiTbody">
+
+</tbody>
+</table>
+
+@section Scripts{
+
+<script>
+$(()=>$.get("/Home/HastaneListesi",(hastaneListesi)=>hastaneListesi.map(hastane=>$('#hastaneListesiTbody').append(`<tr>
+        <td>${hastane.id}</td>
+        <td>${hastane.adi}</td>
+        <td>${hastane.adres}</td>
+    </tr>`))))
+</script>
+}
