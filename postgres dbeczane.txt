@@ -99,6 +99,17 @@ alter table Ilac add constraint fk_IlacFatura foreign key (FaturaId) references 
 
 alter table Fatura add constraint fk_FaturaDepo foreign key (DepoId) references Depo(Id);
 
+create table eczane(Id serial ,
+adi varchar(50),
+adres varchar(200),
+telefon int,
+primary key (Id))
+
+create table eczaci(Id serial,adi varchar(20),soyadi varchar(20),tc int,telefon int,sifre varchar(20),eczaneId int, primary key (Id)
+)
+
+alter table Eczaci add constraint fk_FaturaDepo foreign key (EczaneId) references Eczane(Id);
+
 
 
 

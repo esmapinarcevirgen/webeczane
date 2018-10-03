@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using webeczane.EczaneContext;
 
 namespace webeczane
@@ -37,6 +38,14 @@ namespace webeczane
             services.AddEntityFrameworkNpgsql().AddDbContext<DbEczaneContext>(options => options.UseNpgsql(connectionString));
 
 
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.Cookie.HttpOnly = true;
+            });
+
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -57,6 +66,7 @@ namespace webeczane
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

@@ -11627,11 +11627,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\esma\\Desktop\\webeczane\\webeczane.csproj",
+      "projectUniqueName": "C:\\Users\\esma\\Desktop\\webeczane2\\webeczane.csproj",
       "projectName": "webeczane",
-      "projectPath": "C:\\Users\\esma\\Desktop\\webeczane\\webeczane.csproj",
+      "projectPath": "C:\\Users\\esma\\Desktop\\webeczane2\\webeczane.csproj",
       "packagesPath": "C:\\Users\\esma\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\esma\\Desktop\\webeczane\\obj\\",
+      "outputPath": "C:\\Users\\esma\\Desktop\\webeczane2\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
